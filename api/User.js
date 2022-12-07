@@ -61,11 +61,12 @@ router.get('/health', async (req, res, next) => {
 
 //Signup
 router.post('/signup', (req, res) => {
-  let { name, email, password, dateOfBirth } = req.body;
+  let { name, email, password, dateOfBirth, balance } = req.body;
   name = name.trim();
   email = email.trim();
   password = password.trim();
   dateOfBirth = dateOfBirth?.trim();
+  balance = balance?.trim();
 
   if (!name || !email || !password) {
     return res
@@ -113,6 +114,7 @@ router.post('/signup', (req, res) => {
                 password: hashPassword,
                 dateOfBirth,
                 verified: false,
+                balance,
               });
               newUser
                 .save()
@@ -302,7 +304,7 @@ router.get('/verify/:userId/:uniqueString', (req, res) => {
     });
 });
 
-//Verified page rhouter
+//Verified page router
 router.get('/verified', (req, res) => {
   res.sendFile(path.join(__dirname, './../views/verified.html'));
 });
@@ -369,6 +371,31 @@ router.post('/signin', (req, res) => {
         });
       });
   }
+});
+
+// get user balance
+router.get('/balance/:email', (req, res) => {
+  const { email } = req.params;
+  User.find({ email })
+    .then((data) => {
+      if (data.length) {
+        return res.status(200).json({
+          status: 'Success',
+          msg: 'User balance fetched successfully!',
+          data: data[0].balance,
+        });
+      } else {
+        return res
+          .status(400)
+          .json({ status: 'Failed', msg: 'User not found!' });
+      }
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        status: 'Failed',
+        msg: 'Internal server error while fetching user balance!',
+      });
+    });
 });
 
 //Signout

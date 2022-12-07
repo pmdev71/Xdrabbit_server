@@ -18,6 +18,10 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now - 18 * 365 * 24 * 60 * 60 * 1000,
   },
+  balance: {
+    type: Number,
+    default: 0,
+  },
   verified: {
     type: Boolean,
     default: false,
