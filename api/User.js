@@ -398,6 +398,24 @@ router.get('/balance/:email', (req, res) => {
     });
 });
 
+//update balance
+router.post('/balance', (req, res) => {
+  const { email, balance } = req.body;
+  User.updateOne({ email }, { $set: { balance } })
+    .then(() => {
+      return res.status(200).json({
+        status: 'Success',
+        msg: 'User balance updated successfully!',
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        status: 'Failed',
+        msg: 'Internal server error while updating user balance!',
+      });
+    });
+});
+
 //Signout
 router.get('/signout', (req, res) => {
   res.send('Signout');
