@@ -37,13 +37,40 @@ router.post('/addVideo', async (req, res, next) => {
 });
 
 //get all videos
-router.get('/allVideo', async (req, res, next) => {
+router.get('/allVideos', async (req, res, next) => {
   const videos = await Video.find();
-  return res.status(200).json({
-    title: 'Videos',
-    message: 'Videos fetched successfully',
-    videos,
-  });
+  if (videos.length !== 0) {
+    return res.status(400).json({
+      status: 'Success',
+      msg: 'Videos fetched successfully',
+      videos,
+    });
+  } else {
+    return res.status(400).json({
+      status: 'Failed',
+      msg: 'No videos found',
+    });
+  }
+});
+
+// get random video
+router.get('/randomVideo', async (req, res, next) => {
+  const videos = await Video.find({ targetViews: { $gt: 0 } });
+  const randomVideo = videos[Math.floor(Math.random() * videos.length)];
+  const { videoId } = randomVideo;
+  if (randomVideo.length !== 0) {
+    return res.status(400).json({
+      status: 'Success',
+      msg: 'Random video fetched successfully',
+      randomVideo,
+      videoId,
+    });
+  } else {
+    return res.status(400).json({
+      status: 'Failed',
+      msg: 'No Random videos found',
+    });
+  }
 });
 
 module.exports = router;
