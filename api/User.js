@@ -325,7 +325,6 @@ router.post('/signin', (req, res) => {
       .then((data) => {
         if (data.length) {
           //email exists
-
           if (!data[0].verified) {
             res.json({
               status: 'Pending',
